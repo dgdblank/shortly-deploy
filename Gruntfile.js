@@ -1,9 +1,40 @@
 module.exports = function(grunt) {
 
+  var clientFiles = [
+        'public/client/*.js'
+      ];
+
+  //declare order of library files so dependencies in app get loaded properly
+  var libraryFiles = [
+    'public/lib/jquery.js',
+    'public/lib/underscore.js',
+    'public/lib/backbone.js',
+    'public/lib/handlebars.js'
+  ];
+
+  var serverFiles = [
+      'app/*.js',
+      'app/**/*.js',
+      'lib/*.js'
+      ];
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ';'
+      },
+      clientDist: {
+        src: clientFiles,
+        dest: 'public/dist/<%= pkg.name %>.js'
+      },
+      libDist: {
+        src: libraryFiles,
+        dest: 'public/dist/library.js'
+      }
     },
+
+    clean: ['public/dist/*.*'],
 
     mochaTest: {
       test: {
@@ -21,12 +52,21 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+        // the banner is inserted at the top of the output
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
+        mangle: false
+      },
+      dist: {
+        files: {
+          'public/dist/<%= pkg.name %>.min.js': ['<%= concat.clientDist.dest %>'],
+          'public/dist/library.min.js' : ['<%= concat.libDist.dest %>']
+        }
+      }
     },
 
     jshint: {
-      files: [
-        // Add filespec list here
-      ],
+      files: [clientFiles, serverFiles],
       options: {
         force: 'true',
         jshintrc: '.jshintrc',
@@ -38,6 +78,13 @@ module.exports = function(grunt) {
     },
 
     cssmin: {
+      target: {
+         files: [{
+           src: ['public/*.css', '!*.min.css'],
+           dest: 'public/dist/styles.min.css'
+           // ext: '.min.css'
+         }]
+       }
     },
 
     watch: {
@@ -66,6 +113,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-mocha-test');
@@ -89,11 +137,14 @@ module.exports = function(grunt) {
   // Main grunt tasks
   ////////////////////////////////////////////////////
 
+  // grunt.registerTask('clean', ['clean']);
+
   grunt.registerTask('test', [
     'mochaTest'
   ]);
 
   grunt.registerTask('build', [
+    'clean', 'jshint', 'concat', 'uglify', 'cssmin'
   ]);
 
   grunt.registerTask('upload', function(n) {
@@ -106,6 +157,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
     // add your deploy tasks here
+    'test', 'build', 'upload'
   ]);
 
 
