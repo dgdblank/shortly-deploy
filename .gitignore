@@ -4,6 +4,15 @@
 azure.err
 iisnode.yml
 
+#Build Distribution code
+public/dist
+
+#Node
+node_modules
+
+#SQL db
+db/*.sqlite
+
 # Icon must ends with two \r.
 Icon
 
