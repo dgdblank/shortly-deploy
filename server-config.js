@@ -9,7 +9,7 @@ var handler = require('./lib/request-handler');
 var app = express();
 
 //connect DB to express app
-mongoose.connect('mongodb://localhost/');
+mongoose.connect('mongodb://MongoLab-5:jnJIfhiVavr_qQ7ydMHrm9GVLUOrzNWPdU17lQFbi3A-@ds036698.mongolab.com:36698/MongoLab-5');
 
 
 

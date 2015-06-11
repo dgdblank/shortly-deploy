@@ -105,6 +105,13 @@ module.exports = function(grunt) {
 
     shell: {
       prodServer: {
+        command: [
+        'azure site scale mode standard shortayy',
+        'git push azure master',
+        'azure site log tail shortayy',
+        'azure site browse',
+        'azure site scale mode free shortayy'
+        ].join('&&')
       }
     },
   });
@@ -138,6 +145,10 @@ module.exports = function(grunt) {
 
   // grunt.registerTask('clean', ['clean']);
 
+  grunt.registerTask('prod', [
+    'shell:prodServer'
+    ]);
+
   grunt.registerTask('test', [
     'mochaTest'
   ]);
@@ -148,7 +159,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
-      // add your production server task here
+      // grunt.task.run([ 'prod' ]);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
