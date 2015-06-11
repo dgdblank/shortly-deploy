@@ -108,10 +108,12 @@ module.exports = function(grunt) {
         command: [
         'azure site scale mode standard shortayy',
         'git push azure master',
-        'azure site log tail shortayy',
         'azure site browse',
         'azure site scale mode free shortayy'
-        ].join('&&')
+        ].join('&&'),
+        options: {
+          stdout: true
+        }
       }
     },
   });
@@ -159,7 +161,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('upload', function(n) {
     if(grunt.option('prod')) {
-      // grunt.task.run([ 'prod' ]);
+      grunt.task.run([ 'prod' ]);
     } else {
       grunt.task.run([ 'server-dev' ]);
     }
